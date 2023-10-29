@@ -1,9 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.ept_frontend_mobile">
    <application
-        android:label="ept_frontend_mobile"
+        android:label="Educar para Transformar"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ept_launcher_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"
