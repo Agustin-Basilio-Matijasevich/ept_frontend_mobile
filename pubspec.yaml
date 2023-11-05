@@ -37,13 +37,18 @@ dependencies:
   cupertino_icons: ^1.0.2
 
   #Componentes de Firebase sin soporte desktop
-  firebase_core: ^2.15.1
-  firebase_auth: ^4.7.3
-  cloud_firestore: ^4.8.5
-  firebase_storage: ^11.2.6
+  firebase_auth: ^3.11.2
+  firebase_for_all: ^0.1.1
+  firebase_messaging: ^11.2.7
 
   #Demas dependencias
   provider: ^6.0.5
+  file_picker: ^5.2.11
+  image_picker: ^1.0.4
+  pdf: ^3.10.1
+
+dependency_overrides:
+  firebase_core_platform_interface: 4.5.1 #Necesario para que funcione firebase for all
 
 dev_dependencies:
   flutter_test:
@@ -55,6 +60,13 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: "ept_launcher_icon"
+  ios: true
+  image_path: "assets/images/logo.png"
+  min_sdk_android: 21
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -68,9 +80,36 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    #Images
+    - assets/images/logo.png
+    - assets/images/logo.jpeg #Intentar no usar
+    - assets/images/background.png
+    - assets/images/background.jpeg
+    - assets/images/backgroundBlurred.jpeg
+    - assets/images/backgroundWhiteBlur.jpeg
+    - assets/images/netBrokeWhite.png
+    - assets/images/niveles/inicial01.jpg
+    - assets/images/niveles/inicial02.jpg
+    - assets/images/niveles/inicial03.jpg
+    - assets/images/niveles/primario01.jpg
+    - assets/images/niveles/primario02.jpg
+    - assets/images/niveles/primario03.jpg
+    - assets/images/niveles/secundario01.jpg
+    - assets/images/niveles/secundario02.jpg
+    - assets/images/niveles/secundario03.jpg
+    - assets/images/defaultProfilePhoto.png
+    - assets/images/defaultProfilePhoto32.png
+
+    #Gifs
+    - assets/gifs/robotTyping.gif
+
+  # Fonts
+
+  fonts:
+    - family: CustomFonts
+      fonts:
+        - asset: fonts/CustomFonts.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
