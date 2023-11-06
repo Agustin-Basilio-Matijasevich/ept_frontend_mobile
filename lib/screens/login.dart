@@ -15,43 +15,28 @@ class Login extends StatelessWidget {
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.blue,
       ),
-      body: Center(
-        child: esPantallaChica
-            ? Column(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  _Logo(),
-                  ContenidoForm(),
-                ],
-              )
-            : Container(
-                padding: const EdgeInsets.all(32.0),
-                constraints: const BoxConstraints(maxWidth: 800),
-                child: Row(
-                  children: const [
-                    Expanded(child: _Logo()),
-                    Expanded(
-                      child: Center(child: ContenidoForm()),
-                    ),
-                  ],
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                // Imagen
+                Container(
+                  width: constraints.maxWidth * (80 / 100),
+                  height: constraints.maxHeight * (50 / 100),
+                  alignment: Alignment.center,
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    fit: BoxFit.contain,
+                  ),
                 ),
-              ),
+                const ContenidoForm(),
+              ],
+            ),
+          );
+        },
       ),
-    );
-  }
-}
-
-class _Logo extends StatelessWidget {
-  const _Logo({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Image.asset('assets/images/logo.png'),
-        const Padding(padding: EdgeInsets.all(16.0)),
-      ],
     );
   }
 }

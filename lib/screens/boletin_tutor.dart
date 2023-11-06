@@ -121,7 +121,13 @@ class _ContenidoState extends State<Contenido> {
                   );
                 }
 
-                return DataTable(columns: columns, rows: rows);
+                return SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: DataTable(columns: columns, rows: rows),
+                  ),
+                );
               } else if (snapshot.data != null && snapshot.data!.isEmpty) {
                 return const Text('No se encontraron datos para mostrar');
               } else {
