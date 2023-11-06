@@ -39,7 +39,6 @@ dependencies:
   #Componentes de Firebase
   firebase_auth: ^3.11.2
   firebase_for_all: ^0.1.1
-  firebase_messaging: ^13.1.0
 
   #Demas dependencias
   provider: ^6.0.5
