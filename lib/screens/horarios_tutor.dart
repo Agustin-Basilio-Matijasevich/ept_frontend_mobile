@@ -66,33 +66,45 @@ class GrillaHorariosState extends State<GrillaHorarios> {
         FutureBuilder(
           future: servicio.getCursosPorUsuario(estudianteSeleccionado),
           builder: (context, snapshot) {
+            if (estudianteSeleccionado == null) {
+              return const SizedBox();
+            }
             if (snapshot.data != null && snapshot.data!.isNotEmpty) {
-              return DataTable(
-                columns: const [
-                  DataColumn(label: Text('Curso')),
-                  DataColumn(label: Text('Aula')),
-                  DataColumn(label: Text('Dia')),
-                  DataColumn(label: Text('Hora inicio')),
-                  DataColumn(label: Text('Hora fin')),
-                ],
-                rows: snapshot.data!
-                    .map(
-                      (e) => DataRow(cells: [
-                        DataCell(Text(e.nombre)),
-                        DataCell(Text(e.aula)),
-                        DataCell(Text(e.dia.name)),
-                        DataCell(Text(
-                            '${e.horainicio.hour}:${e.horainicio.minute.toString().padLeft(2, '0')}')),
-                        DataCell(Text(
-                            '${e.horafin.hour}:${e.horafin.minute.toString().padLeft(2, '0')}')),
-                      ]),
-                    )
-                    .toList(),
+              return Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: DataTable(
+                      columns: const [
+                        DataColumn(label: Text('Curso')),
+                        DataColumn(label: Text('Aula')),
+                        DataColumn(label: Text('Dia')),
+                        DataColumn(label: Text('Hora inicio')),
+                        DataColumn(label: Text('Hora fin')),
+                      ],
+                      rows: snapshot.data!
+                          .map(
+                            (e) => DataRow(cells: [
+                              DataCell(Text(e.nombre)),
+                              DataCell(Text(e.aula)),
+                              DataCell(Text(e.dia.name)),
+                              DataCell(Text(
+                                  '${e.horainicio.hour}:${e.horainicio.minute.toString().padLeft(2, '0')}')),
+                              DataCell(Text(
+                                  '${e.horafin.hour}:${e.horafin.minute.toString().padLeft(2, '0')}')),
+                            ]),
+                          )
+                          .toList(),
+                    ),
+                  ),
+                ),
               );
+            } else if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
             } else if (snapshot.data != null && snapshot.data!.isEmpty) {
               return const Text('No se encontraron datos para mostrar');
-            } else if (snapshot.connectionState == ConnectionState.active) {
-              return const CircularProgressIndicator();
             } else {
               return const Text('Ocurrio un error');
             }

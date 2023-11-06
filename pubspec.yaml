@@ -44,7 +44,7 @@ dependencies:
   #Demas dependencias
   provider: ^6.0.5
   file_picker: ^5.2.11
-  image_picker: ^1.0.4
+  #image_picker: ^1.0.4
   pdf: ^3.10.1
 
 dependency_overrides:

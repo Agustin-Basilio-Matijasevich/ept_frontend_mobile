@@ -27,15 +27,10 @@ class Welcome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool esPantallaChica = MediaQuery.of(context).size.width < 600;
     final usuario = Provider.of<Usuario?>(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Bienvenido a Educar Para Trasformar',
-            style: esPantallaChica
-                ? const TextStyle(fontSize: 17)
-                : const TextStyle(fontSize: null)),
         backgroundColor: Colors.lightBlue.shade300,
         foregroundColor: Colors.white,
         elevation: 0.0,
@@ -49,70 +44,19 @@ class Welcome extends StatelessWidget {
         ),
       ),
       body: LayoutBuilder(
-        builder: (context, constraints) {
-          if (constraints.maxWidth < 600) {
-            return SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Column(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: Image.asset(
-                                "assets/images/backgroundWhiteBlur.jpeg")
-                            .image,
-                        fit: BoxFit.cover,
-                        alignment: AlignmentDirectional.bottomCenter,
-                      ),
-                    ),
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const <Widget>[
-                        _Logo(),
-                        _CompanyDescription(),
-                      ],
-                    ),
-                  ),
-                  const PageFooter(),
-                ],
-              ),
-            );
-          } else {
-            return SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Column(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: Image.asset(
-                                "assets/images/backgroundWhiteBlur.jpeg")
-                            .image,
-                        fit: BoxFit.cover,
-                        alignment: AlignmentDirectional.bottomCenter,
-                      ),
-                    ),
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        const _Logo(),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width - 700,
-                          child: const _CompanyDescription(),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const PageFooter(),
-                ],
-              ),
-            );
-          }
-        },
+        builder: (context, constraints) => Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image:
+                  Image.asset("assets/images/backgroundWhiteBlur.jpeg").image,
+              fit: BoxFit.cover,
+              alignment: AlignmentDirectional.bottomCenter,
+            ),
+          ),
+          width: constraints.maxWidth,
+          height: constraints.maxHeight,
+          child: const _CompanyDescription(),
+        ),
       ),
     );
   }
@@ -214,50 +158,63 @@ class _CompanyDescription extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool esPantallaChica = MediaQuery.of(context).size.width < 600;
     Usuario? usuario = Provider.of<Usuario?>(context);
-
-    return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(80, 0, 0, 0),
-      child: Text(
-        "¡Bienvenido ${usuario?.nombre} \nal sistema de gestión de\neducar para trasformar!",
-        softWrap: true,
-        textAlign: esPantallaChica ? TextAlign.center : TextAlign.left,
-        style: esPantallaChica
-            ? const TextStyle(
-                //fontFamily:
-                color: Color(0xFF0c245e),
-                fontSize: 30,
-                //fontStyle: FontStyle.italic,
-                fontWeight: FontWeight.bold,
-                fontStyle: FontStyle.italic,
-              )
-            : const TextStyle(
-                //fontFamily:
-                color: Color(0xFF0c245e),
-                fontSize: 40,
-                //fontStyle: FontStyle.italic,
-                fontWeight: FontWeight.bold,
-                fontStyle: FontStyle.italic,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Column(
+          children: [
+            Container(
+              alignment: Alignment.center,
+              height: constraints.maxHeight * (50 / 100),
+              width: constraints.maxWidth * (80 / 100),
+              child: Image.asset("assets/images/logo.png", fit: BoxFit.contain),
+            ),
+            Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(10),
+              child: Text(
+                "¡Bienvenido ${usuario?.nombre} al sistema de gestión de educar para trasformar!",
+                softWrap: true,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Color(0xFF0c245e),
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                  fontStyle: FontStyle.italic,
+                ),
               ),
-      ),
+            ),
+          ],
+        );
+      },
     );
-  }
-}
+    // bool esPantallaChica = MediaQuery.of(context).size.width < 600;
+    // Usuario? usuario = Provider.of<Usuario?>(context);
 
-class _Logo extends StatelessWidget {
-  const _Logo();
-
-  @override
-  Widget build(BuildContext context) {
-    bool esPantallaChica = MediaQuery.of(context).size.width < 600;
-
-    return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(145, 0, 0, 0),
-      child: Center(
-        child: Image.asset("assets/images/logo.png",
-            scale: 1, width: esPantallaChica ? 350 : null),
-      ),
-    );
+    // return Padding(
+    //   padding: const EdgeInsetsDirectional.fromSTEB(80, 0, 0, 0),
+    //   child: Text(
+    //     "¡Bienvenido ${usuario?.nombre} al sistema de gestión de educar para trasformar!",
+    //     softWrap: true,
+    //     textAlign: esPantallaChica ? TextAlign.center : TextAlign.left,
+    //     style: esPantallaChica
+    //         ? const TextStyle(
+    //             //fontFamily:
+    //             color: Color(0xFF0c245e),
+    //             fontSize: 30,
+    //             //fontStyle: FontStyle.italic,
+    //             fontWeight: FontWeight.bold,
+    //             fontStyle: FontStyle.italic,
+    //           )
+    //         : const TextStyle(
+    //             //fontFamily:
+    //             color: Color(0xFF0c245e),
+    //             fontSize: 40,
+    //             //fontStyle: FontStyle.italic,
+    //             fontWeight: FontWeight.bold,
+    //             fontStyle: FontStyle.italic,
+    //           ),
+    //   ),
+    // );
   }
 }

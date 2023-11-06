@@ -59,7 +59,7 @@ class LoginButton extends StatelessWidget {
             height: 32,
           ),
           label: Text(
-            'Hola, ${user.nombre}',
+            user.nombre,
             style: const TextStyle(fontSize: 18),
           ),
           onPressed: () {

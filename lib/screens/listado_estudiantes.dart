@@ -202,7 +202,7 @@ class _TablaUsuariosState extends State<TablaUsuarios> {
                     },
                   );
                 },
-                child: Text('Generar listado PDF'),
+                child: const Text('Generar listado PDF'),
               );
             } else {
               return const SizedBox();

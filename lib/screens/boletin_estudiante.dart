@@ -42,10 +42,10 @@ class _GrillaBoletinState extends State<GrillaBoletin> {
       builder: (context, snapshot) {
         if (snapshot.data != null && snapshot.data!.isNotEmpty) {
           var columns = const [
-            DataColumn(label: Text('Cursos')),
-            DataColumn(label: Text('1er trimestre')),
-            DataColumn(label: Text('2do trimestre')),
-            DataColumn(label: Text('3er cuatrimestre')),
+            DataColumn(label: Text('Curso')),
+            DataColumn(label: Text('1 Tri.')),
+            DataColumn(label: Text('2 Tri.')),
+            DataColumn(label: Text('3 Tri.')),
             DataColumn(label: Text('Promedio')),
           ];
 
@@ -79,7 +79,13 @@ class _GrillaBoletinState extends State<GrillaBoletin> {
             );
           }
 
-          return DataTable(columns: columns, rows: rows);
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: DataTable(columns: columns, rows: rows),
+            ),
+          );
         } else if (snapshot.data != null && snapshot.data!.isEmpty) {
           return const Text('No se encontraron datos para mostrar');
         } else if (snapshot.connectionState == ConnectionState.waiting) {
