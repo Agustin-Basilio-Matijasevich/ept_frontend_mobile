@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/curso.dart';
 import '../models/usuario.dart';
 import '../services/businessdata.dart';
 
@@ -82,78 +83,135 @@ class ListaHorarios extends StatefulWidget {
   State<ListaHorarios> createState() => _ListaHorariosState();
 }
 
-class _ListaHorariosState extends State<ListaHorarios> {
+class _ListaHorariosState extends State<ListaHorarios>
+    with TickerProviderStateMixin {
   final servicio = BusinessData();
+
+  Curso? cursoSeleccionado;
+
+  Widget botonCurso(Curso curso, bool selected) {
+    return TextButton.icon(
+      onPressed: () {
+        setState(() {
+          if (!selected) {
+            cursoSeleccionado = curso;
+          } else {
+            cursoSeleccionado = null;
+          }
+        });
+      },
+      style: const ButtonStyle(
+        backgroundColor: MaterialStatePropertyAll(Colors.blue),
+        foregroundColor: MaterialStatePropertyAll(Colors.white),
+      ),
+      icon: selected
+          ? const Icon(Icons.arrow_drop_down)
+          : const Icon(Icons.arrow_drop_up),
+      label: Text(curso.nombre),
+    );
+  }
+
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(seconds: 1),
+    vsync: this,
+  )..repeat();
 
   @override
   Widget build(BuildContext context) {
     final usuario = Provider.of<Usuario?>(context);
-    return LayoutBuilder(
-      builder: (context, constraints) => FutureBuilder(
-        future: servicio.getCursosPorUsuario(usuario),
-        builder: (context, snapshot) {
-          // Si el servicio contesto y tiene cursos
-          if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-            return Column(
-              children: snapshot.data!
-                  .map(
-                    (e) => Container(
-                      // height: 50,
-                      width: constraints.maxWidth,
-                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                      child: TextButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) => SimpleDialog(
-                              title: Text('Curso'),
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    left: 10,
-                                  ),
-                                  child: Text(
-                                    '    Nombre: ${e.nombre} \n'
-                                    '    Aula: ${e.aula} \n'
-                                    '    Dia: ${e.dia.name[0].toUpperCase() + e.dia.name.substring(1)} \n'
-                                    '    Hora Inicio: ${e.horainicio.hour.toString().padLeft(2, '0')}:${e.horafin.minute.toString().padLeft(2, '0')} \n'
-                                    '    Hora Fin: ${e.horafin.hour.toString().padLeft(2, '0')}:${e.horafin.minute.toString().padLeft(2, '0')}',
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: LayoutBuilder(
+        builder: (context, constraints) => FutureBuilder(
+          future: servicio.getCursosPorUsuario(usuario),
+          builder: (context, snapshot) {
+            // Si el servicio contesto y tiene cursos
+            if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+              return ExpansionPanelList(
+                expansionCallback: (int index, bool isExpanded) {
+                  setState(() {
+                    if (isExpanded) {
+                      cursoSeleccionado = null;
+                    } else {
+                      cursoSeleccionado = snapshot.data![index];
+                    }
+                  });
+                },
+                children: snapshot.data!
+                    .map(
+                      (e) => ExpansionPanel(
+                        headerBuilder: (BuildContext context, bool isExpanded) {
+                          return ListTile(
+                            title: Text(e.nombre),
+                            selected: isExpanded,
+                            tileColor: Colors.blue,
+                            // selectedTileColor: Colors.blue,
+                            textColor: Colors.white,
                           );
                         },
-                        style: const ButtonStyle(
-                          backgroundColor:
-                              MaterialStatePropertyAll(Colors.blue),
-                          foregroundColor:
-                              MaterialStatePropertyAll(Colors.white),
+                        isExpanded: (cursoSeleccionado != null &&
+                            cursoSeleccionado!.nombre == e.nombre),
+                        canTapOnHeader: true,
+                        body: Container(
+                          width: constraints.maxWidth,
+                          decoration: const BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(2),
+                              bottomRight: Radius.circular(2),
+                            ),
+                          ),
+                          child: Container(
+                            margin: const EdgeInsets.only(
+                              left: 10,
+                              top: 10,
+                            ),
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: Text(
+                              'Nombre: ${e.nombre} \n'
+                              'Aula: ${e.aula} \n'
+                              'Dia: ${e.dia.name[0].toUpperCase() + e.dia.name.substring(1)} \n'
+                              'Hora Inicio: ${e.horainicio.hour.toString().padLeft(2, '0')}:${e.horafin.minute.toString().padLeft(2, '0')} \n'
+                              'Hora Fin: ${e.horafin.hour.toString().padLeft(2, '0')}:${e.horafin.minute.toString().padLeft(2, '0')}',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
                         ),
-                        child: Text(e.nombre),
                       ),
-                    ),
-                  )
-                  .toList(),
-            );
-          }
-          // Si el servicio contesto y no tiene cursos
-          else if (snapshot.hasData && snapshot.data!.isEmpty) {
-            return const Text("No se encontraron cursos para mostrar");
-          }
-          // Si el servicio no contesto
-          else if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator.adaptive();
-          }
-          // Sino muestra error
-          else {
-            return const Text("Ocurrio un error");
-          }
-        },
+                    )
+                    .toList(),
+              );
+            }
+            // Si el servicio contesto y no tiene cursos
+            else if (snapshot.hasData && snapshot.data!.isEmpty) {
+              return const Text("No se encontraron cursos para mostrar");
+            }
+            // Si el servicio no contesto
+            else if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator.adaptive();
+            }
+            // Sino muestra error
+            else {
+              return const Text("Ocurrio un error");
+            }
+          },
+        ),
       ),
     );
   }
 }
+
+// Text(
+// '    Nombre: ${e.nombre} \n'
+// '    Aula: ${e.aula} \n'
+// '    Dia: ${e.dia.name[0].toUpperCase() + e.dia.name.substring(1)} \n'
+// '    Hora Inicio: ${e.horainicio.hour.toString().padLeft(2, '0')}:${e.horafin.minute.toString().padLeft(2, '0')} \n'
+// '    Hora Fin: ${e.horafin.hour.toString().padLeft(2, '0')}:${e.horafin.minute.toString().padLeft(2, '0')}',
+// style: const TextStyle(
+// fontSize: 18,
+// ),
+// ),
