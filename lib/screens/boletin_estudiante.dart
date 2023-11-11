@@ -48,10 +48,10 @@ class _ListaBoletinState extends State<ListaBoletin> {
                 notas: snapshot.data!,
                 constraints: constraints,
               );
-            } else if (snapshot.data != null && snapshot.data!.isEmpty) {
-              return const Text('No se encontraron datos para mostrar');
             } else if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator();
+            } else if (snapshot.data != null && snapshot.data!.isEmpty) {
+              return const Text('No se encontraron datos para mostrar');
             } else {
               return const Text('Ocurrio un error');
             }

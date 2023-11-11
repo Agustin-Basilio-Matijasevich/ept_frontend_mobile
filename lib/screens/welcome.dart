@@ -1,25 +1,15 @@
-import 'package:ept_frontend/screens/asignacion_tutor.dart';
 import 'package:ept_frontend/screens/boletin_estudiante.dart';
 import 'package:ept_frontend/screens/deuda.dart';
 import 'package:ept_frontend/screens/horarios_estudiante.dart';
 import 'package:ept_frontend/screens/horarios_tutor.dart';
 import 'package:ept_frontend/screens/listado_estudiantes.dart';
-// import 'package:ept_frontend/screens/pago_cuotas.dart';
 import 'package:ept_frontend/screens/perfil.dart';
-import 'package:ept_frontend/widgets/footer.dart';
 import 'package:ept_frontend/widgets/login_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/usuario.dart';
-import 'asignacion_docentes.dart';
-import 'asignacion_estudiantes.dart';
 import 'boletin_tutor.dart';
-import 'creacion_curso.dart';
-import 'creacion_usuario.dart';
-import 'deudores.dart';
-import 'listado_cursos.dart';
-import 'listado_usuarios.dart';
 import 'notas.dart';
 
 class Welcome extends StatelessWidget {
@@ -86,7 +76,6 @@ class Welcome extends StatelessWidget {
               Icons.list),
           seccion(context, 'Horarios', const Horarios(),
               Icons.watch_later_outlined),
-          seccion(context, 'Carga de notas', const Notas(), Icons.grade),
         ];
       case UserRoles.estudiante:
         return [
@@ -104,29 +93,6 @@ class Welcome extends StatelessWidget {
           seccion(context, 'Horarios', const HorariosTutor(),
               Icons.watch_later_outlined),
           seccion(context, 'Boletin', const BoletinTutor(), Icons.grade),
-        ];
-      case UserRoles.nodocente:
-        return [
-          header,
-          profile,
-          seccion(context, 'Deudores', const Deudores(), Icons.money_off),
-          // Seccion(context, 'Alumnos', Alumnos(), Icons.school),
-          // Seccion(
-          //     context, 'Horarios', HorariosTutor(), Icons.watch_later_outlined),
-          seccion(context, 'Asignación de estudiantes',
-              const AsignacionEstudiantes(), Icons.room),
-          seccion(context, 'Asignación de docentes', const AsignacionDocentes(),
-              Icons.room),
-          seccion(context, 'Asignacion de tutores', const AsignacionTutor(),
-              Icons.people),
-          seccion(context, 'Creación de Usuarios', const CreacionUsuario(),
-              Icons.people_outline_sharp),
-          seccion(context, 'Creación de Curso', const CreacionCurso(),
-              Icons.location_pin),
-          seccion(
-              context, 'Listado de cursos', const ListadoCursos(), Icons.list),
-          seccion(context, 'Listado de usuarios', const ListadoUsuarios(),
-              Icons.person),
         ];
       default:
         return [

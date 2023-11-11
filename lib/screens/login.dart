@@ -1,4 +1,5 @@
 import 'package:ept_frontend/main.dart';
+import 'package:ept_frontend/models/usuario.dart';
 import 'package:flutter/material.dart';
 import 'package:ept_frontend/services/auth.dart';
 
@@ -7,8 +8,6 @@ class Login extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool esPantallaChica = MediaQuery.of(context).size.width < 600;
-
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
@@ -22,15 +21,20 @@ class Login extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 // Imagen
-                Container(
-                  width: constraints.maxWidth * (80 / 100),
-                  height: constraints.maxHeight * (50 / 100),
-                  alignment: Alignment.center,
-                  child: Image.asset(
-                    'assets/images/logo.png',
-                    fit: BoxFit.contain,
-                  ),
-                ),
+                // Si el teclado esta contraido, muestra la imagen.
+                // Sino, la oculta.
+                (WidgetsBinding.instance.window.viewInsets.bottom == 0.0)
+                    ? Container(
+                        width: constraints.maxWidth * (80 / 100),
+                        height: constraints.maxHeight * (50 / 100),
+                        alignment: Alignment.center,
+                        child: Image.asset(
+                          'assets/images/logo.png',
+                          fit: BoxFit.contain,
+                        ),
+                      )
+                    : const SizedBox(),
+
                 const ContenidoForm(),
               ],
             ),
@@ -81,78 +85,85 @@ class EstadoContenidoForm extends State<ContenidoForm> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextFormField(
-              validator: (String? value) {
-                if (emailValidator(value) == null) {
-                  setState(() {
-                    email = value;
-                  });
-                } else {
-                  return emailValidator(email);
-                }
-
-                return null;
-              },
-              onChanged: (val) {
-                setState(() => email = val);
-              },
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                hintText: 'Ingrese su email',
-                prefixIcon: Icon(Icons.email),
-                border: OutlineInputBorder(),
-              ),
-            ),
-            _gap(),
-            TextFormField(
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return 'La contraseña no puede estar vacía';
-                }
-
-                if (value.length < 6) {
-                  return 'La contraseña debe tener al menos 6 caracteres';
-                }
-
-                return null;
-              },
-              onChanged: (String? val) {
-                setState(() => password = val);
-              },
-              obscureText: !esVisible,
-              decoration: InputDecoration(
-                labelText: 'Contraseña',
-                hintText: 'Ingrese su contraseña',
-                prefixIcon: const Icon(Icons.lock),
-                border: const OutlineInputBorder(),
-                suffixIcon: IconButton(
-                  icon:
-                      Icon(esVisible ? Icons.visibility_off : Icons.visibility),
-                  onPressed: () {
+            Padding(
+              padding: const EdgeInsets.only(top: 10, bottom: 10),
+              child: TextFormField(
+                validator: (String? value) {
+                  if (emailValidator(value) == null) {
                     setState(() {
-                      esVisible = !esVisible;
+                      email = value;
                     });
-                  },
+                  } else {
+                    return emailValidator(email);
+                  }
+
+                  return null;
+                },
+                onChanged: (val) {
+                  setState(() => email = val);
+                },
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  hintText: 'Ingrese su email',
+                  prefixIcon: Icon(Icons.email),
+                  border: OutlineInputBorder(),
                 ),
               ),
             ),
-            _gap(),
-            CheckboxListTile(
-              value: recordarContrasenia,
-              onChanged: (value) {
-                if (value == null) return;
-                setState(() {
-                  recordarContrasenia = value;
-                });
-              },
-              title: const Text('Recordarme'),
-              controlAffinity: ListTileControlAffinity.leading,
-              dense: true,
-              contentPadding: const EdgeInsets.all(0),
+            Padding(
+              padding: const EdgeInsets.only(top: 10, bottom: 10),
+              child: TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (String? value) {
+                  if (value == null || value.isEmpty) {
+                    return 'La contraseña no puede estar vacía';
+                  }
+
+                  if (value.length < 6) {
+                    return 'La contraseña debe tener al menos 6 caracteres';
+                  }
+
+                  return null;
+                },
+                onChanged: (String? val) {
+                  setState(() => password = val);
+                },
+                obscureText: !esVisible,
+                decoration: InputDecoration(
+                  labelText: 'Contraseña',
+                  hintText: 'Ingrese su contraseña',
+                  prefixIcon: const Icon(Icons.lock),
+                  border: const OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                        esVisible ? Icons.visibility_off : Icons.visibility),
+                    onPressed: () {
+                      setState(() {
+                        esVisible = !esVisible;
+                      });
+                    },
+                  ),
+                ),
+              ),
             ),
-            _gap(),
-            SizedBox(
+            Padding(
+              padding: const EdgeInsets.only(top: 10, bottom: 10),
+              child: CheckboxListTile(
+                value: recordarContrasenia,
+                onChanged: (value) {
+                  if (value == null) return;
+                  setState(() {
+                    recordarContrasenia = value;
+                  });
+                },
+                title: const Text('Recordarme'),
+                controlAffinity: ListTileControlAffinity.leading,
+                dense: true,
+                contentPadding: const EdgeInsets.all(0),
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.only(top: 10, bottom: 10),
               width: double.infinity,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -171,6 +182,25 @@ class EstadoContenidoForm extends State<ContenidoForm> {
                   if (_formKey.currentState!.validate()) {
                     loginResponse = await auth.login(email!, password!);
                     if (loginResponse) {
+                      if ((await auth.usuario.first)!.rol ==
+                          UserRoles.nodocente) {
+                        showDialog(
+                          context: navigatorKey.currentContext!,
+                          builder: (context) => AlertDialog(
+                              title: const Text('Respuesta Login'),
+                              content: const Text(
+                                  'Esta aplicacion no esta autorizada para no docentes'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('Aceptar'),
+                                )
+                              ]),
+                        );
+                        auth.logout();
+                      }
                     } else {
                       showDialog(
                         context: navigatorKey.currentContext!,
@@ -202,6 +232,4 @@ class EstadoContenidoForm extends State<ContenidoForm> {
       ),
     );
   }
-
-  Widget _gap() => const SizedBox(height: 16);
 }

@@ -2,8 +2,8 @@ import 'dart:io';
 
 // import 'package:ept_frontend/services/businessdata.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:file_picker/file_picker.dart';
 import '../models/usuario.dart';
 import '../services/auth.dart';
 
@@ -14,7 +14,7 @@ class Perfil extends StatelessWidget {
   Widget build(BuildContext context) {
     final usuario = Provider.of<Usuario?>(context);
     final auth = AuthService();
-    final imagenusr;
+    Image imagenusr;
 
     if (usuario!.foto == '') {
       imagenusr = Image.asset('assets/images/defaultProfilePhoto.png');
@@ -43,73 +43,60 @@ class Perfil extends StatelessWidget {
                       cursor: SystemMouseCursors.click,
                       child: GestureDetector(
                         onTap: () {
+                          final picker = ImagePicker();
                           showDialog(
+                            barrierDismissible: false,
                             context: context,
                             builder: (context) {
                               return FutureBuilder(
-                                future: FilePicker.platform.pickFiles(
-                                  dialogTitle:
-                                      'Elija una imagen para su perfil',
-                                  type: FileType.image,
-                                  allowedExtensions: ['png', 'jpeg', 'jpg'],
-                                  lockParentWindow: true,
-                                  onFileLoading: (p0) {
-                                    if (p0 == FilePickerStatus.picking) {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) =>
-                                            const CircularProgressIndicator(),
-                                      );
-                                    }
-                                  },
+                                future: picker.pickImage(
+                                  source: ImageSource.gallery,
                                 ),
                                 builder: (context, snapshot) {
                                   // Obtuvo un archivo
-                                  if (snapshot.hasData &&
-                                      snapshot.data!.files.isNotEmpty) {
-                                    // El archivo es mayor a 4MB
-                                    if (snapshot.data!.files[0].size >
-                                        4000000) {
-                                      return const SizedBox();
-                                    } else {
-                                      return FutureBuilder(
-                                        future: auth.updateUserImg(
-                                          usuario.uid,
-                                          File(snapshot.data!.files[0].path!),
-                                        ),
-                                        builder: (context, snapshot) {
-                                          // Esta epserando la respuesta del servicio
-                                          if (snapshot.connectionState ==
-                                              ConnectionState.waiting) {
-                                            return const CircularProgressIndicator();
-                                          }
-                                          // El servicio contesto correctamente.
-                                          else if (snapshot.hasData &&
-                                              snapshot.data!) {
-                                            return const SizedBox();
-                                          }
-                                          // El servicio contesto que hubo un error.
-                                          else {
-                                            return AlertDialog(
-                                              title: const Text(
-                                                  'Actualizacion de foto de perfil'),
-                                              content: const Text(
-                                                  'Ocurrio un error actualizando su foto de perfil'),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  child: const Text('Aceptar'),
-                                                ),
-                                              ],
-                                            );
-                                          }
-                                        },
-                                      );
-                                    }
+                                  if (snapshot.hasData) {
+                                    return FutureBuilder(
+                                      future: auth.updateUserImg(
+                                        usuario.uid,
+                                        File(snapshot.data!.path),
+                                      ),
+                                      builder: (context, snapshot) {
+                                        // El servicio contesto correctamente.
+                                        if (snapshot.hasData &&
+                                            snapshot.data!) {
+                                          Navigator.of(context).pop();
+                                          return const SizedBox();
+                                        }
+                                        // Esta esperando la respuesta del servicio
+                                        else if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return const Center(
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        }
+                                        // El servicio contesto que hubo un error.
+                                        else {
+                                          return AlertDialog(
+                                            title: const Text(
+                                                'Actualizacion de foto de perfil'),
+                                            content: const Text(
+                                                'Ocurrio un error actualizando su foto de perfil'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: const Text('Aceptar'),
+                                              ),
+                                            ],
+                                          );
+                                        }
+                                      },
+                                    );
+                                  } else {
+                                    Navigator.of(context).pop();
+                                    return const SizedBox();
                                   }
-                                  return const SizedBox();
                                 },
                               );
                             },
