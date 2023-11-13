@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../models/curso.dart';
 import '../models/usuario.dart';
-import '../services/pdfgenerator.dart';
+//import '../services/pdfgenerator.dart';
 // import 'package:pdf/widgets.dart';
 
 // Para mostrar estudiantes que tiene un profesor por cada materia
