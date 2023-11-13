@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 // import '../models/curso.dart';
 import '../models/usuario.dart';
 import '../services/businessdata.dart';
+import '../widgets/expanded_panel_list/notas_panel_list.dart';
 
 class BoletinTutor extends StatelessWidget {
   const BoletinTutor({Key? key}) : super(key: key);
@@ -38,107 +39,76 @@ class _ContenidoState extends State<Contenido> {
   Widget build(BuildContext context) {
     final usuario = Provider.of<Usuario?>(context);
     final servicio = BusinessData();
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        // Controles
-        FutureBuilder(
-          future: servicio.getHijos(usuario!),
-          builder: (context, snapshot) {
-            if (snapshot.data != null && snapshot.data!.isNotEmpty) {
-              return Container(
-                padding: const EdgeInsets.all(20),
-                child: DropdownMenu<Usuario>(
-                  label: const Text('Seleccione un usuario'),
-                  onSelected: (value) {
-                    setState(() {
-                      usuarioSeleccionado = value;
-                    });
-                  },
-                  dropdownMenuEntries: snapshot.data!.map(
-                    (e) {
-                      return DropdownMenuEntry<Usuario>(
-                        value: e,
-                        label: e.nombre,
-                      );
-                    },
-                  ).toList(),
-                ),
-              );
-            } else if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
-            } else {
-              return const Icon(Icons.do_not_disturb_alt);
-            }
-          },
-        ),
-        FutureBuilder(
-          future: servicio.getPromedioPorCurso(usuarioSeleccionado, 2023),
-          builder: (context, snapshot) {
-            if (usuarioSeleccionado == null) {
-              return const SizedBox();
-            } else if (snapshot.connectionState == ConnectionState.done) {
-              if (snapshot.data != null && snapshot.data!.isNotEmpty) {
-                var columns = const [
-                  DataColumn(label: Text('Cursos')),
-                  DataColumn(label: Text('1er trimestre')),
-                  DataColumn(label: Text('2do trimestre')),
-                  DataColumn(label: Text('3er cuatrimestre')),
-                  DataColumn(label: Text('Promedio')),
-                ];
-
-                var rows = <DataRow>[];
-                // Itera por curso
-                for (var curso in snapshot.data!) {
-                  var nombreCurso = curso.keys.first.nombre;
-                  var notas = curso.values.first;
-                  int sumatoria = 0;
-                  int cantNotas = 0;
-                  for (var nota in notas) {
-                    if (nota != null) {
-                      cantNotas++;
-                      sumatoria += nota;
-                    }
-                  }
-
-                  int promedio =
-                      (sumatoria / ((cantNotas == 0) ? 1 : cantNotas)).round();
-
-                  rows.add(
-                    DataRow(
-                      cells: [
-                        DataCell(Text(nombreCurso)),
-                        DataCell(Text(
-                            (notas[0] != null) ? notas[0].toString() : '')),
-                        DataCell(Text(
-                            (notas[1] != null) ? notas[1].toString() : '')),
-                        DataCell(Text(
-                            (notas[2] != null) ? notas[2].toString() : '')),
-                        DataCell(
-                            Text((cantNotas == 0) ? '' : promedio.toString())),
-                      ],
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          // Controles
+          LayoutBuilder(
+            builder: (context, constraints) => FutureBuilder(
+              future: servicio.getHijos(usuario!),
+              builder: (context, snapshot) {
+                if (snapshot.data != null && snapshot.data!.isNotEmpty) {
+                  return Container(
+                    padding: const EdgeInsets.all(20),
+                    child: DropdownButton<Usuario>(
+                      // Si no hay un usuario seleccionado, muestra hint,
+                      // Sino, muestra el nombre del usuario seleccionado.
+                      hint: (usuarioSeleccionado == null)
+                          ? const Text('Seleccione un usuario')
+                          : Text(usuarioSeleccionado!.nombre),
+                      // Cuando se lanza el evento, si se selecciona el mismo
+                      // usuario, no se cambia el estado. (No se refresca)
+                      onChanged: (value) {
+                        if (usuarioSeleccionado == null ||
+                            usuarioSeleccionado!.uid != value!.uid) {
+                          setState(() {
+                            usuarioSeleccionado = value;
+                          });
+                        }
+                      },
+                      items: snapshot.data!.map(
+                        (e) {
+                          return DropdownMenuItem<Usuario>(
+                            value: e,
+                            child: Text(e.nombre),
+                          );
+                        },
+                      ).toList(),
                     ),
                   );
+                } else if (snapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else {
+                  return const Icon(Icons.do_not_disturb_alt);
                 }
-
-                return SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: DataTable(columns: columns, rows: rows),
-                  ),
-                );
-              } else if (snapshot.data != null && snapshot.data!.isEmpty) {
-                return const Text('No se encontraron datos para mostrar');
-              } else {
-                return const Text('Ocurrio un error');
-              }
-            } else {
-              return const CircularProgressIndicator();
-            }
-          },
-        ),
-      ],
+              },
+            ),
+          ),
+          // Lista de materias que al presionar muestran las notas
+          LayoutBuilder(
+            builder: (context, constraints) => FutureBuilder(
+              future: servicio.getPromedioPorCurso(usuarioSeleccionado, 2023),
+              builder: (context, snapshot) {
+                if (usuarioSeleccionado == null) {
+                  return const SizedBox();
+                } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                  return NotasExpansionPanelList(
+                      notas: snapshot.data!, constraints: constraints);
+                } else if (snapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.data != null && snapshot.data!.isEmpty) {
+                  return const Text('No se encontraron datos para mostrar');
+                } else {
+                  return const Text('Ocurrio un error');
+                }
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
