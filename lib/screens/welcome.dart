@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 
 import '../models/usuario.dart';
 import 'boletin_tutor.dart';
-import 'notas.dart';
+//import 'notas.dart';
 
 class Welcome extends StatelessWidget {
   const Welcome({super.key});
