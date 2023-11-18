@@ -41,8 +41,7 @@ class _AgregarRecordatorioFormState extends State<AgregarRecordatorioForm> {
   final horaInicioController = TextEditingController();
   final horaFinController = TextEditingController();
 
-  DateTime? horaInicio;
-  DateTime? horaFin;
+  DateTime? fechaRecordar;
 
   RecordatoriosService recordatoriosService = RecordatoriosService();
 
@@ -74,9 +73,13 @@ class _AgregarRecordatorioFormState extends State<AgregarRecordatorioForm> {
                 );
                 print(returnDateTime.toString());
                 return returnDateTime;
+              } else {
+                return null;
               }
             },
           );
+        } else {
+          return null;
         }
       },
     );
@@ -97,7 +100,7 @@ class _AgregarRecordatorioFormState extends State<AgregarRecordatorioForm> {
             children: [
               // Titulo
               Padding(
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 child: TextFormField(
                   decoration: const InputDecoration(
                     label: Text('Titulo'),
@@ -107,7 +110,7 @@ class _AgregarRecordatorioFormState extends State<AgregarRecordatorioForm> {
               ),
               // Subtitulo
               Padding(
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 child: TextFormField(
                   decoration: const InputDecoration(
                     label: Text('Subtitulo'),
@@ -119,14 +122,14 @@ class _AgregarRecordatorioFormState extends State<AgregarRecordatorioForm> {
                   controller: subtituloController,
                 ),
               ),
-              // Hora Inicio
+              // Hora Recordar
               Padding(
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 child: TextFormField(
                   controller: horaInicioController,
                   readOnly: true,
                   decoration: const InputDecoration(
-                    labelText: 'Hora de inicio',
+                    labelText: 'Hora a Recordar',
                     hintText: 'Pulse para elegir un horario',
                     prefixIcon: Icon(Icons.timer),
                     border: OutlineInputBorder(),
@@ -143,36 +146,7 @@ class _AgregarRecordatorioFormState extends State<AgregarRecordatorioForm> {
                         ? datePicked.toString().substring(0, 16)
                         : horaInicioController.text;
                     setState(() {
-                      horaInicio = datePicked;
-                    });
-                  },
-                ),
-              ),
-              // Hora Fin
-              Padding(
-                padding: EdgeInsets.all(8),
-                child: TextFormField(
-                  controller: horaFinController,
-                  readOnly: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Hora de inicio',
-                    hintText: 'Pulse para elegir un horario',
-                    prefixIcon: Icon(Icons.timer),
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) => (value == null ||
-                          value.trim() == '' ||
-                          DateTime.tryParse(value) == null)
-                      ? 'Ingrese una fecha y hora validas'
-                      : null,
-                  onTap: () async {
-                    DateTime? datePicked = await showDateTimePicker(context);
-
-                    horaFinController.text = (datePicked != null)
-                        ? datePicked.toString().substring(0, 16)
-                        : horaFinController.text;
-                    setState(() {
-                      horaFin = datePicked;
+                      fechaRecordar = datePicked;
                     });
                   },
                 ),
@@ -192,8 +166,8 @@ class _AgregarRecordatorioFormState extends State<AgregarRecordatorioForm> {
                                   Recordatorio(
                                     tituloController.text,
                                     subtituloController.text,
-                                    horaInicio!,
-                                    horaFin!,
+                                    DateTime.now(),
+                                    fechaRecordar!,
                                   ),
                                 ),
                                 builder: (context, snapshot) {
@@ -229,7 +203,6 @@ class _AgregarRecordatorioFormState extends State<AgregarRecordatorioForm> {
                             },
                           ).then((response) {
                             widget.listStateKey.currentState!.setState(() {});
-                            ;
                             if (response == null || response == false) {
                               Navigator.of(context).pop();
                             } else {
