@@ -1,11 +1,7 @@
 import 'package:ept_frontend/models/recordatorio.dart';
-import 'package:ept_frontend/screens/recordatorios/agregar_recordatorio.dart';
 import 'package:ept_frontend/services/recordatorios_service.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../../models/curso.dart';
 import '../../models/usuario.dart';
 import '../util_functions.dart';
 

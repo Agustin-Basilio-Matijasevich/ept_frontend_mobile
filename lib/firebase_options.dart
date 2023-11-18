@@ -63,7 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '914161436275',
     projectId: 'ept-qa-51bf5',
     storageBucket: 'ept-qa-51bf5.appspot.com',
-    iosClientId: '914161436275-erc1tnl1chol5k0vv718kvfg1sm7p2ih.apps.googleusercontent.com',
+    iosClientId:
+        '914161436275-erc1tnl1chol5k0vv718kvfg1sm7p2ih.apps.googleusercontent.com',
     iosBundleId: 'netbroke.ddns.net.eptFrontend',
   );
 }
