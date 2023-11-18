@@ -33,6 +33,16 @@ class RecordatoriosService {
     return true;
   }
 
+  Future<bool> modificaRecordatorio (Usuario usuario, String idRecordatorio, Recordatorio recordatorio) async {
+    try {
+      await _db.collection("usuarios").doc(usuario.uid).collection("recordatorios").doc(idRecordatorio).update(recordatorio.toJson());
+    } catch (e) {
+      print("Error actualizando el Recordatorio. Exeption: $e");
+      return false;
+    }
+    return true;
+  }
+
   Future<List<Map<String,Recordatorio>>> getRecordatorios (Usuario usuario) async {
     List<Map<String,Recordatorio>> recordatorios = [];
     List<DocumentSnapshotForAll<Map<String, Object?>>> documentos;

@@ -50,20 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDxWti9dRSw45byf5TR-xytUyJq9oDsqSo',
-    appId: '1:836912270531:android:6185aea358d29ccef92676',
-    messagingSenderId: '836912270531',
-    projectId: 'ept-prod-424d6',
-    storageBucket: 'ept-prod-424d6.appspot.com',
+    apiKey: 'AIzaSyCcW36QMlDOUbZbe7C_nKk-dMw-gS6_omU',
+    appId: '1:914161436275:android:6ab0e8bf66ff7c33e68c06',
+    messagingSenderId: '914161436275',
+    projectId: 'ept-qa-51bf5',
+    storageBucket: 'ept-qa-51bf5.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDT131R-YEc5A266mytmRU-1f2slovb8Ys',
-    appId: '1:836912270531:ios:ca6c230156dec738f92676',
-    messagingSenderId: '836912270531',
-    projectId: 'ept-prod-424d6',
-    storageBucket: 'ept-prod-424d6.appspot.com',
-    iosClientId: '836912270531-alh8ljod0ch9rqqoh5n81ntsjqunmucd.apps.googleusercontent.com',
+    apiKey: 'AIzaSyAUGVobBpeyfDakfKkfH7IU9y6yUjozbmU',
+    appId: '1:914161436275:ios:4fd74a1db82ebbb8e68c06',
+    messagingSenderId: '914161436275',
+    projectId: 'ept-qa-51bf5',
+    storageBucket: 'ept-qa-51bf5.appspot.com',
+    iosClientId: '914161436275-erc1tnl1chol5k0vv718kvfg1sm7p2ih.apps.googleusercontent.com',
     iosBundleId: 'netbroke.ddns.net.eptFrontend',
   );
 }
