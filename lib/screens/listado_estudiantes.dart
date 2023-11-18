@@ -64,9 +64,12 @@ class _TablaUsuariosState extends State<TablaUsuarios> {
                         ? const Text('Seleccione un curso')
                         : Text(cursoSeleccionado!.nombre),
                     onChanged: (value) {
-                      setState(() {
-                        cursoSeleccionado = value;
-                      });
+                      if ((cursoSeleccionado != null && value != null) &&
+                          cursoSeleccionado!.nombre != value.nombre) {
+                        setState(() {
+                          cursoSeleccionado = value;
+                        });
+                      }
                     },
                     items: snapshot.data!
                         .map(
@@ -96,6 +99,10 @@ class _TablaUsuariosState extends State<TablaUsuarios> {
               datasetState = snapshot.connectionState;
               if (cursoSeleccionado == null) {
                 return const SizedBox();
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
               } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                 dataset = snapshot.data;
                 return DataTable(
@@ -133,11 +140,6 @@ class _TablaUsuariosState extends State<TablaUsuarios> {
                       );
                     },
                   ).toList(),
-                );
-              } else if (snapshot.connectionState == ConnectionState.waiting) {
-                return Container(
-                  alignment: Alignment.center,
-                  child: const CircularProgressIndicator(),
                 );
               } else if (snapshot.hasData && snapshot.data!.isEmpty) {
                 return const Text('No se encontraron alumnos para el curso');
