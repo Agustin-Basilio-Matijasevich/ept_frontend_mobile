@@ -6,21 +6,27 @@ import '../../models/usuario.dart';
 import '../../services/recordatorios_service.dart';
 
 class AgregarRecordatorio extends StatelessWidget {
-  const AgregarRecordatorio({super.key});
+  const AgregarRecordatorio({super.key, required this.listStateKey});
+
+  final GlobalKey<State> listStateKey;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: const Center(
-        child: AgregarRecordatorioForm(),
+      body: Center(
+        child: AgregarRecordatorioForm(
+          listStateKey: listStateKey,
+        ),
       ),
     );
   }
 }
 
 class AgregarRecordatorioForm extends StatefulWidget {
-  const AgregarRecordatorioForm({super.key});
+  const AgregarRecordatorioForm({super.key, required this.listStateKey});
+
+  final GlobalKey<State> listStateKey;
 
   @override
   State<AgregarRecordatorioForm> createState() =>
@@ -222,6 +228,8 @@ class _AgregarRecordatorioFormState extends State<AgregarRecordatorioForm> {
                               );
                             },
                           ).then((response) {
+                            widget.listStateKey.currentState!.setState(() {});
+                            ;
                             if (response == null || response == false) {
                               Navigator.of(context).pop();
                             } else {

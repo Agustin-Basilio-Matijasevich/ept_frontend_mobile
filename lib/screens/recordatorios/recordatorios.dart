@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'agregar_recordatorio.dart';
 
 class Recordatorios extends StatelessWidget {
-  const Recordatorios({super.key});
+  Recordatorios({super.key});
+
+  final listStateKey = GlobalKey<State>();
 
   @override
   Widget build(BuildContext context) {
@@ -14,6 +16,7 @@ class Recordatorios extends StatelessWidget {
       ),
       body: LayoutBuilder(
         builder: (context, constraints) => RecordatoriosPanelList(
+          key: listStateKey,
           constraints: constraints,
         ),
       ),
@@ -24,7 +27,8 @@ class Recordatorios extends StatelessWidget {
             Navigator.push<void>(
               context,
               MaterialPageRoute<void>(
-                builder: (BuildContext context) => const AgregarRecordatorio(),
+                builder: (BuildContext context) =>
+                    AgregarRecordatorio(listStateKey: listStateKey),
               ),
             );
           },
@@ -38,19 +42,5 @@ class Recordatorios extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class RecordatoriosContent extends StatefulWidget {
-  const RecordatoriosContent({super.key});
-
-  @override
-  State<RecordatoriosContent> createState() => _RecordatoriosContentState();
-}
-
-class _RecordatoriosContentState extends State<RecordatoriosContent> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
   }
 }

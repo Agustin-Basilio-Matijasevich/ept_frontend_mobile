@@ -73,8 +73,8 @@ class Welcome extends StatelessWidget {
         return [
           header,
           profile,
-          seccion(context, 'Recordatorios', const Recordatorios(),
-              Icons.calendar_month),
+          seccion(
+              context, 'Recordatorios', Recordatorios(), Icons.calendar_month),
           seccion(context, 'Lista de alumnos', const ListadoEstudiantes(),
               Icons.list),
           seccion(context, 'Horarios', const Horarios(),
@@ -84,8 +84,8 @@ class Welcome extends StatelessWidget {
         return [
           header,
           profile,
-          seccion(context, 'Recordatorios', const Recordatorios(),
-              Icons.calendar_month),
+          seccion(
+              context, 'Recordatorios', Recordatorios(), Icons.calendar_month),
           seccion(context, 'Horarios', const Horarios(),
               Icons.watch_later_outlined),
           seccion(context, 'Boletin', const BoletinEstudiante(), Icons.grade),
@@ -94,8 +94,8 @@ class Welcome extends StatelessWidget {
         return [
           header,
           profile,
-          seccion(context, 'Recordatorios', const Recordatorios(),
-              Icons.calendar_month),
+          seccion(
+              context, 'Recordatorios', Recordatorios(), Icons.calendar_month),
           seccion(context, 'Pago de cuotas', const Deuda(), Icons.receipt),
           seccion(context, 'Horarios', const HorariosTutor(),
               Icons.watch_later_outlined),
