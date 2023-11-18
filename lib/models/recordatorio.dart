@@ -25,8 +25,8 @@ class Recordatorio {
     return {
       'titulo' : titulo,
       'descripcion' : descripcion,
-      'fechaCreacion' : fechaCreacion,
-      'fechaRecordar' : fechaRecordar,
+      'fechaCreacion' : fechaCreacion.toIso8601String(),
+      'fechaRecordar' : fechaRecordar.toIso8601String(),
     };
   }
 
