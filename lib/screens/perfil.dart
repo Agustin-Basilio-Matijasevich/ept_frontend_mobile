@@ -93,6 +93,11 @@ class Perfil extends StatelessWidget {
                                         }
                                       },
                                     );
+                                  } else if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
                                   } else {
                                     Navigator.of(context).pop();
                                     return const SizedBox();
