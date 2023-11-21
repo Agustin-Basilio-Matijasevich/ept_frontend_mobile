@@ -246,6 +246,12 @@ class _RecordatoriosPanelListState extends State<RecordatoriosPanelList> {
                                   },
                                   child: const Text('Eliminar'),
                                 ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('Cancelar'),
+                                ),
                               ],
                             );
                           },

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:ept_frontend/models/recordatorio.dart';
 import 'package:ept_frontend/models/usuario.dart';
 import 'package:firebase_for_all/firebase_for_all.dart';

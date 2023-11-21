@@ -1,6 +1,7 @@
 import 'package:ept_frontend/services/businessdata.dart';
 // import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
@@ -46,11 +47,11 @@ class _TablaUsuariosState extends State<TablaUsuarios> {
   @override
   Widget build(BuildContext context) {
     final usuario = Provider.of<Usuario?>(context);
-    return Column(
-      // mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        LayoutBuilder(
-          builder: (context, constraints) => Container(
+    return LayoutBuilder(
+      builder: (context, constraints) => Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.all(30),
             width: constraints.maxWidth,
@@ -64,11 +65,13 @@ class _TablaUsuariosState extends State<TablaUsuarios> {
                         ? const Text('Seleccione un curso')
                         : Text(cursoSeleccionado!.nombre),
                     onChanged: (value) {
-                      if ((cursoSeleccionado != null && value != null) &&
-                          cursoSeleccionado!.nombre != value.nombre) {
-                        setState(() {
-                          cursoSeleccionado = value;
-                        });
+                      if (value != null) {
+                        if ((cursoSeleccionado == null) ||
+                            cursoSeleccionado!.nombre != value.nombre) {
+                          setState(() {
+                            cursoSeleccionado = value;
+                          });
+                        }
                       }
                     },
                     items: snapshot.data!
@@ -91,65 +94,75 @@ class _TablaUsuariosState extends State<TablaUsuarios> {
               },
             ),
           ),
-        ),
-        SingleChildScrollView(
-          child: FutureBuilder(
-            future: servicio.listarAlumnosPorCurso(cursoSeleccionado),
-            builder: (context, snapshot) {
-              datasetState = snapshot.connectionState;
-              if (cursoSeleccionado == null) {
-                return const SizedBox();
-              } else if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                dataset = snapshot.data;
-                return DataTable(
-                  columns: const [
-                    DataColumn(label: Text('Nombre Completo')),
-                    DataColumn(
-                      label: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Text('Email'),
-                      ),
-                    ),
-                  ],
-                  rows: snapshot.data!.map(
-                    (e) {
-                      return DataRow(
-                        cells: [
-                          DataCell(Text(e.nombre)),
-                          DataCell(
-                            Text(e.correo),
-                            onLongPress: () {
-                              Clipboard.setData(ClipboardData(text: e.correo))
-                                  .then(
-                                (v) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                          "Correo copiado al portapapeles"),
-                                    ),
+          // SizedBox(
+          //   height: constraints.maxHeight - 110,
+          //   width: constraints.maxWidth,
+          Flexible(
+            fit: FlexFit.loose,
+            child: FutureBuilder(
+              future: servicio.listarAlumnosPorCurso(cursoSeleccionado),
+              builder: (context, snapshot) {
+                datasetState = snapshot.connectionState;
+                if (cursoSeleccionado == null) {
+                  return const SizedBox();
+                } else if (snapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                  dataset = snapshot.data;
+                  return SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: DataTable(
+                      columns: const [
+                        DataColumn(label: Text('Nombre Completo')),
+                        DataColumn(
+                          label: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Text('Email'),
+                          ),
+                        ),
+                      ],
+                      rows: snapshot.data!.map(
+                        (e) {
+                          return DataRow(
+                            cells: [
+                              DataCell(Text(e.nombre)),
+                              DataCell(
+                                Text(e.correo),
+                                onLongPress: () {
+                                  Clipboard.setData(
+                                          ClipboardData(text: e.correo))
+                                      .then(
+                                    (v) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                              "Correo copiado al portapapeles"),
+                                        ),
+                                      );
+                                    },
                                   );
                                 },
-                              );
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  ).toList(),
-                );
-              } else if (snapshot.hasData && snapshot.data!.isEmpty) {
-                return const Text('No se encontraron alumnos para el curso');
-              } else {
-                return const Text('Ocurrio un error');
-              }
-            },
+                              ),
+                            ],
+                          );
+                        },
+                      ).toList(),
+                    ),
+                  );
+                } else if (snapshot.hasData && snapshot.data!.isEmpty) {
+                  return const Text('No se encontraron alumnos para el curso');
+                } else {
+                  return const Text('Ocurrio un error');
+                }
+              },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
