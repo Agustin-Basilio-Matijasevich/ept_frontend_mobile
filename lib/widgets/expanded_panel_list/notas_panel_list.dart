@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../models/curso.dart';
-import '../../models/nota.dart';
 
 class NotasExpansionPanelList extends StatefulWidget {
   const NotasExpansionPanelList({
@@ -19,7 +18,7 @@ class NotasExpansionPanelList extends StatefulWidget {
 }
 
 class _NotasExpansionPanelListState extends State<NotasExpansionPanelList> {
-  int getPromedio(Iterable<int?> notas) {
+  int? getPromedio(Iterable<int?> notas) {
     int sumatoria = 0;
     int cantNotas = 0;
     for (var nota in notas) {
@@ -28,7 +27,11 @@ class _NotasExpansionPanelListState extends State<NotasExpansionPanelList> {
         cantNotas++;
       }
     }
-    return (sumatoria / cantNotas).round();
+    if (cantNotas == 0) {
+      return null;
+    } else {
+      return (sumatoria / cantNotas).round();
+    }
   }
 
   Curso? cursoSeleccionado;
@@ -83,7 +86,7 @@ class _NotasExpansionPanelListState extends State<NotasExpansionPanelList> {
                     'Primer trimestre: ${(e.values.first[0] == null) ? '-' : e.values.first[0]} \n'
                     'Segundo trimestre: ${(e.values.first[1] == null) ? '-' : e.values.first[1]}\n'
                     'Tercer trimestre: ${(e.values.first[2] == null) ? '-' : e.values.first[2]}\n'
-                    'Promedio: ${getPromedio(e.values.first)}',
+                    'Promedio: ${(getPromedio(e.values.first) == null) ? '-' : getPromedio(e.values.first)}',
                     style: const TextStyle(
                       fontSize: 20,
                       color: Colors.white,
